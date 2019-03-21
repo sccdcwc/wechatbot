@@ -15,6 +15,7 @@ import sys
 # 启动微信机器人，自动根据操作系统执行不同的指令
 # windows系统或macOS Sierra系统使用bot = Bot()
 # linux系统或macOS Terminal系统使用bot = Bot(console_qr=2)
+dakalist=[]
 if ('Windows' in system()):
     # Windows
     bot = Bot(cache_path=True)
@@ -31,7 +32,7 @@ else:
 def send_message(your_message):
     try:
         # 对方的微信名称
-        my_group= bot.friends().search(group_name)[0]
+        my_group= bot.groups().search(group_name)[0]
 
         # 发送消息给对方
         my_group.send(your_message)
@@ -50,7 +51,7 @@ def get_message():
 
 # 在规定时间内进行关心她操作
 def start_care():
-
+    global dakalist
     # 待发送的内容，先置为空
     message = ""
 
@@ -68,12 +69,22 @@ def start_care():
                 message = "早安，一起来学英语哦：\n" + "原文: " + content + "\n\n翻译: " + note+"\n记得打卡哟！"
             else:
                 message="早安，记得打卡哟( ∙̆ .̯ ∙̆ )"
+            str="已经打卡：\n"
+            for item in dakalist:
+                str+=item
+            message+=str
             # 是否加上随机表情
             send_message(message)
             print("提醒早上打卡:%s" % time.ctime())
+            dakalist=[]
         elif (now_time == say_good_dinner):
             message = "everybody,该打卡了！！！！"
+            str = "已经打卡：\n"
+            for item in dakalist:
+                str = str+item+";"
+            message += str
             send_message(message)
+            dakalist = []
             print("提醒晚上打卡:%s" % time.ctime())
 
         elif (now_time == say_good_dream):
@@ -110,7 +121,7 @@ def start_care():
 
         # 每60秒检测一次
         time.sleep(60)
-my_group = bot.friends().search(group_name)[0]  # 记得把名字改成想用机器人的群
+my_group = bot.groups().search(group_name)[0]  # 记得把名字改成想用机器人的群
 tuling = Tuling(api_key='aa82f087376f44d5941bda3871d46a1d')  # 一定要添加，不然实现不了
 
 t = Thread(target=start_care, name='start_care')
@@ -119,7 +130,32 @@ t.start()
 
 @bot.register(my_group, except_self=False)  # 使用图灵机器人自动在指定群聊天
 def reply_my_friend(msg):
-    if "聊天机器人" in msg.text:
+    global dakalist
+    if "pika妹" in msg.text.lower():
+        print(tuling.do_reply(msg))
+    list=["打卡","打","卡","ka","daka"]
+    for item in list:
+        if item in msg.text.lower():
+            print(msg.chat.name)
+            dakalist.append(msg.chat.name)
+            break
+
+
+user1 = bot.friends().search("陈文聪")[0]  # 记得把名字改成想用机器人的群
+@bot.register(user1, except_self=False)  # 使用图灵机器人自动在指定群聊天
+def reply_my_friend(msg):
+    print(tuling.do_reply(msg))
+
+
+user2 = bot.friends().search("大零零")[0]  # 记得把名字改成想用机器人的群
+@bot.register(user2, except_self=False)  # 使用图灵机器人自动在指定群聊天
+def reply_my_friend(msg):
+    print(tuling.do_reply(msg))
+
+group1 = bot.groups().search("1501一家人")[0]  # 记得把名字改成想用机器人的群
+@bot.register(group1, except_self=False)  # 使用图灵机器人自动在指定群聊天
+def reply_my_friend(msg):
+    if "聪聪" in msg.text.lower():
         print(tuling.do_reply(msg))
 
 embed()
