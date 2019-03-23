@@ -129,33 +129,59 @@ t.start()
 
 
 @bot.register(my_group, except_self=False)  # 使用图灵机器人自动在指定群聊天
-def reply_my_friend(msg):
+def reply_my_group(msg):
     global dakalist
+    if "朱一龙" in msg.text:
+        send_message("朱一龙喜欢大零零，不解释！")
+    elif "白宇" in msg.text:
+        send_message("白宇喜欢小明同学，没理由！")
     if "pika妹" in msg.text.lower():
         print(tuling.do_reply(msg))
-    list=["打卡","打","卡","ka","daka"]
+    list=["打卡","打","卡","ka","daka","da"]
     for item in list:
         if item in msg.text.lower():
-            print(msg.chat.name)
-            dakalist.append(msg.chat.name)
-            break
+            name=msg.member.name
+            print(name)
+            if name not in dakalist:
+                dakalist.append(name)
+                break
 
 
-user1 = bot.friends().search("陈文聪")[0]  # 记得把名字改成想用机器人的群
-@bot.register(user1, except_self=False)  # 使用图灵机器人自动在指定群聊天
+# 注册好友请求类消息
+@bot.register(msg_types=FRIENDS)
+# 自动接受验证信息中包含 'wxpy' 的好友请求
+def auto_accept_friends(msg):
+    # 判断好友请求中的验证文本
+    if '芝麻开门' in msg.text.lower():
+        # 接受好友 (msg.card 为该请求的用户对象)
+        new_friend = bot.accept_friend(msg.card)
+        # 或 new_friend = msg.card.accept()
+        # 向新的好友发送消息
+        new_friend.send('哈哈，快来和我聊天吧！')
+
+myfrieds=bot.friends()
+@bot.register(myfrieds,except_self=True)
 def reply_my_friend(msg):
-    print(tuling.do_reply(msg))
+    if msg.sender.name=="王嘉茹":
+        result="白宇："
+    elif msg.sender=="大零零":
+        result="朱一龙："
+    else:
+        result=""
+    txt=tuling.reply_text(msg)
+    name=msg.sender.name
+    txt="亲爱的%s，%s"%(name,txt)
+    result=result+txt
+    msg.sender.send(result)
 
-
-user2 = bot.friends().search("大零零")[0]  # 记得把名字改成想用机器人的群
-@bot.register(user2, except_self=False)  # 使用图灵机器人自动在指定群聊天
-def reply_my_friend(msg):
-    print(tuling.do_reply(msg))
-
-group1 = bot.groups().search("1501一家人")[0]  # 记得把名字改成想用机器人的群
-@bot.register(group1, except_self=False)  # 使用图灵机器人自动在指定群聊天
-def reply_my_friend(msg):
+mygroups=bot.groups()
+mygroups.remove(my_group)
+print(mygroups)
+@bot.register(mygroups,except_self=True)
+def reply_my_group(msg):
     if "聪聪" in msg.text.lower():
-        print(tuling.do_reply(msg))
+    # print(tuling.do_reply(msg))
+        txt = tuling.reply_text(msg)
+        msg.sender.send(txt)
 
 embed()
