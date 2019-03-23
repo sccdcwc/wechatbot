@@ -159,8 +159,8 @@ def auto_accept_friends(msg):
         # 向新的好友发送消息
         new_friend.send('哈哈，快来和我聊天吧！')
 
-myfrieds=bot.friends()
-@bot.register(myfrieds,except_self=True)
+myfrieds=bot.friends().search("陈文聪")[0]
+@bot.register(myfrieds,except_self=False)
 def reply_my_friend(msg):
     if msg.sender.name=="王嘉茹":
         result="白宇："
@@ -174,14 +174,14 @@ def reply_my_friend(msg):
     result=result+txt
     msg.sender.send(result)
 
-mygroups=bot.groups()
-mygroups.remove(my_group)
-print(mygroups)
-@bot.register(mygroups,except_self=True)
-def reply_my_group(msg):
-    if "聪聪" in msg.text.lower():
-    # print(tuling.do_reply(msg))
-        txt = tuling.reply_text(msg)
-        msg.sender.send(txt)
+# mygroups=bot.groups()
+# mygroups.remove(my_group)
+# print(mygroups)
+# @bot.register(mygroups,except_self=True)
+# def reply_my_group(msg):
+#     if "聪聪" in msg.text.lower():
+#     # print(tuling.do_reply(msg))
+#         txt = tuling.reply_text(msg)
+#         msg.sender.send(txt)
 
 embed()

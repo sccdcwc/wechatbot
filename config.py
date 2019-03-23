@@ -24,7 +24,7 @@ say_good_dream = cf.get("configuration", "say_good_dream")
 # # 一般这里的代码不要改动，需要增加提示语可以自己打开对应的文件修改
 # # 早上起床问候语列表，数据来源于新浪微博
 # str_list_good_morning = ''
-# with open("./remind_sentence/sentence_good_morning.txt", "r", encoding='UTF-8') as f:
+# with open("./remind_sentence/sentence_good_morning.txt.txt", "r", encoding='UTF-8') as f:
 #     str_list_good_morning = f.readlines()
 # print(str_list_good_morning)
 #
